@@ -6,13 +6,13 @@ def Menu(view, set_view):
     def crear_boton(id, texto):
         if view == id:
             stylo = {
-                "background": COLORS["medium_blue"], 
-                "box-shadow": "0 0 12px rgba(0, 212, 255, 0.8)",
+                "background": COLORS["medium_gray"], 
+                "box-shadow": f"0 0 12px {COLORS["deep_gray"]}",
                 "border": "1px solid transparent"
             }
             if id == "yo":
                 stylo = {
-                    "background": COLORS["medium_blue"],
+                    "background": COLORS["medium_gray"],
                     "box-shadow": "0 0 12px rgba(0, 212, 255, 0.8)",
                     "border": "1px solid rgba(255, 255, 255, 0.15)",
                 }
@@ -24,7 +24,7 @@ def Menu(view, set_view):
             }
             if id == "yo":
                 stylo = {
-                    "background": "rgba(4, 4, 4, 0.65)",
+                    "background": COLORS["dark_bg"],
                     "backdrop-filter": "blur(20px)",
                     "-webkit-backdrop-filter": "blur(20px)",
                     "border": "1px solid rgba(255, 255, 255, 0.08)",
@@ -44,7 +44,13 @@ def Menu(view, set_view):
 
     menu = html.div(
         {
-            "class_name": "menu-wrapper"
+            "class_name": "menu-wrapper",
+            "style": {
+                    "z-index": "999", 
+                    "position": "sticky",
+                    "right": "0",
+                    "top": "0",
+                }
         },
         html.style(
             """
@@ -53,18 +59,19 @@ def Menu(view, set_view):
                     flex-direction: row;
                     width: 100%;
                     justify-content: center;
+                    position: relative;    
                 }
 
                 button {
                     background: none;          
                     border: 1px solid transparent;                
-                    padding: 10px 20px;                
+                    padding: 8px 15px;                
                     margin: 0;                
                     cursor: pointer;          
                     font: inherit;            
                     color: inherit;            
                     outline: none;
-                    font-size: 0.8rem;
+                    font-size: 0.7rem;
                     font-weight: 600;
                     border-radius: 999px;
                     transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, border 0.3s ease, backdrop-filter 0.3s ease;
@@ -79,8 +86,7 @@ def Menu(view, set_view):
                     content: "";
                     position: absolute;
                     
-                    /* --- EFECTO DARK GLASSMORPHISM --- */
-                    background: rgba(4, 4, 4, 0.65);
+                    background: rgba(49, 49, 49, 0.65); 
                     backdrop-filter: blur(20px);
                     -webkit-backdrop-filter: blur(20px);
                     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -91,7 +97,7 @@ def Menu(view, set_view):
                         inset 0 0 18px 9px rgba(0, 0, 0, 0.4); 
                     /* --------------------------------- */
 
-                    bottom: 1.5rem;
+                    bottom: 1.4rem;
                     left: 0;
                     width: 100%;
                     height: 50%;
@@ -102,14 +108,14 @@ def Menu(view, set_view):
                 .btn-yo {
                     background: none;
                     border-radius: 50%;
-                    width: 4.7rem;
-                    height: 4.5rem;
+                    width: 4.2rem;
+                    height: 4rem;
                     padding: 0;
                     margin: 0;
                 }
                 
                 .material-icons {
-                    font-size: 3.5rem;
+                    font-size: 3rem;
                 }
                 
                 @media (max-width: 657px) {

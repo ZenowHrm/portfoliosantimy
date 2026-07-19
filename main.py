@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from reactpy import component, html, use_state
 from reactpy.backend.fastapi import configure
+from sqlalchemy.orm import Session
+from database import SessionLocal, engine
+
+from backend import crud_proyectos, schemas
+import models
 
 from theme import COLORS
 
@@ -11,7 +16,7 @@ from components.me import Me
 from components.ideas_form import Ideas
 from components.logs_view import Logs
 
-
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 app.add_websocket_route = app.add_api_websocket_route
 # ---------------------------------------
@@ -64,18 +69,10 @@ def App():
                     color: #ffffff;
                     font-family: Sono, sans-serif;
                 }
-            """),
-        html.div(
-            {
-                "style": {
-                    "position": "sticky",
-                    "right": "0",
-                    "top": "0",
-                }
-            },Menu(view, set_view),
-            
+            """
         ),
-        set_pag(view)
+        Menu(view, set_view),
+        set_pag(view),
     )
     
     return pagina
