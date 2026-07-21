@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from reactpy import component, html, use_state
 from reactpy.backend.fastapi import configure
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 
-from backend import crud_proyectos, schemas
 import models
 
 from theme import COLORS
@@ -19,6 +19,7 @@ from components.logs_view import Logs
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 app.add_websocket_route = app.add_api_websocket_route
+app.mount("/static", StaticFiles(directory="static"), name="static")
 # ---------------------------------------
 
 @component
@@ -68,6 +69,7 @@ def App():
                     padding: 0;
                     color: #ffffff;
                     font-family: Sono, sans-serif;
+                    box-sizing: border-box;
                 }
             """
         ),

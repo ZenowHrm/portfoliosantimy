@@ -5,16 +5,35 @@ from theme import COLORS
 def Modal(card_data, on_close):
     if not card_data:
         return html.div()
-        
+    
+    boton_previa = html.a(
+        {
+            "href": card_data["previa"],
+            "target": "_blank",
+            "class_name": "btn-action btn-previa"
+        }, 
+        "Preview"
+    ) if card_data["previa"] else None
+
+    boton_descarga = html.a(
+        {
+            "href": card_data["descarga"],
+            "target": "_blank",
+            "class_name": "btn-action btn-descarga"
+        }, 
+        "Download"
+    ) if card_data["descarga"] else None
+
     return html.div(
         {
+            "class_name": "modal-overlay", # <-- Nueva clase para el fondo
             "on_click": lambda event: on_close(),
             "style": {
                 "position": "fixed",
                 "top": "0",
                 "left": "0",
-                "width": "100vw",
-                "height": "100vh",
+                "right": "0",
+                "bottom": "0",
                 "background-color": "rgba(0, 0, 0, 0.7)", 
                 "display": "flex",
                 "justify-content": "center",
@@ -25,6 +44,36 @@ def Modal(card_data, on_close):
         },
         html.style(
             """
+            /* --- ANIMACIONES Y EFECTOS --- */
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            @keyframes popIn {
+                from { 
+                    opacity: 0; 
+                    transform: scale(0.95); /* Escala inicial sutil */
+                }
+                to { 
+                    opacity: 1; 
+                    transform: scale(1); 
+                }
+            }
+
+            .modal-overlay {
+                animation: fadeIn 0.25s ease-out forwards;
+                /* Efecto de desenfoque extra para el fondo */
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px); /* Soporte para Safari */
+            }
+
+            .modal-content-animated {
+                /* Animación del contenido: suave y no exagerada */
+                animation: popIn 0.3s ease-out forwards;
+            }
+
+            /* --- SCROLLBAR --- */
             .custom-scrollbar {
                 /* Soporte para Firefox */
                 scrollbar-width: thin;
@@ -33,28 +82,72 @@ def Modal(card_data, on_close):
             
             /* Soporte para Chrome, Edge, Safari */
             .custom-scrollbar::-webkit-scrollbar {
-                width: 6px; /* Barra delgada y minimalista */
+                width: 6px; 
             }
             
             .custom-scrollbar::-webkit-scrollbar-track {
-                background: transparent; /* El riel es invisible para no tapar tu degradado */
-                margin: 10px 0; /* Un poco de margen para que no toque los bordes superior/inferior */
+                background: transparent; 
+                margin: 10px 0; 
             }
             
             .custom-scrollbar::-webkit-scrollbar-thumb {
-                background-color: rgba(255, 255, 255, 0.2); /* Gris/blanco muy sutil */
-                border-radius: 10px; /* Bordes redondeados */
+                background-color: rgba(255, 255, 255, 0.2); 
+                border-radius: 10px; 
             }
             
             .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                background-color: rgba(255, 255, 255, 0.4); /* Se ilumina ligeramente al pasar el mouse */
+                background-color: rgba(255, 255, 255, 0.4); 
+            }
+
+            /* --- ESTILOS DE LOS BOTONES --- */
+            .btn-action {
+                padding: 0.8rem 1.5rem;
+                border-radius: 10px;
+                font-weight: bold;
+                text-decoration: none;
+                text-align: center;
+                transition: transform 0.2s, background 0.3s;
+                font-size: 0.8rem;
+                min-width: 120px;
+            }
+            .btn-previa {
+                background: rgba(255, 255, 255, 0.15);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
+            .btn-previa:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+            .btn-descarga {
+                background: white;
+                color: black;
+            }
+            .btn-descarga:hover {
+                background: #f0f0f0;
+                transform: scale(1.05); /* Efecto de crecimiento al pasar el cursor */
+            }
+
+            /* --- ADAPTACIÓN PARA MÓVIL --- */
+            @media (max-width: 768px) {
+                .modal-mobile {
+                    width: 95% !important;
+                    padding: 1.2rem !important;
+                    max-height: 85vh !important; 
+                    margin: auto !important; 
+                }
+                .botones-container {
+                    /* En móviles, es mejor apilar los botones si son grandes */
+                    flex-direction: column !important;
+                    gap: 0.8rem !important;
+                }
             }
             """
         ),
         html.div(
             {
                 "on_click": event(lambda e: None, stop_propagation=True),
-                "class_name": "custom-scrollbar",
+                # <-- Agregamos la clase modal-content-animated al contenedor principal de la tarjeta
+                "class_name": "custom-scrollbar modal-mobile modal-content-animated",
                 "style": {
                     "box-sizing": "border-box",
                     "max-height": "90vh",
@@ -68,6 +161,7 @@ def Modal(card_data, on_close):
                     "display": "flex",
                     "flex-direction": "column",
                     "align-items": "center",
+                    "margin": "auto", 
                     "color": "white"
                 }
             },
@@ -77,5 +171,20 @@ def Modal(card_data, on_close):
             }),
             html.h2({"style": {"margin": "0 0 1rem 0"}}, card_data["titulo"]),
             html.p({"style": {"text-align": "center", "margin-bottom": "1.5rem"}}, card_data["descripcion"]),
+            
+            # Contenedor de botones
+            html.div(
+                {
+                    "class_name": "botones-container",
+                    "style": {
+                        "display": "flex", 
+                        "gap": "1rem", 
+                        "justify-content": "center", 
+                        "width": "100%", 
+                        "margin-top": "auto" 
+                    }
+                },
+                *[b for b in [boton_previa, boton_descarga] if b is not None]
+            )
         )
     )
