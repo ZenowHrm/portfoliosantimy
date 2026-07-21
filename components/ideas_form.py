@@ -31,7 +31,7 @@ def Ideas():
         
         await asyncio.sleep(0.1)
         
-        success, code = EnviarEmail(email)
+        success, code = await asyncio.to_thread(EnviarEmail, email)
         
         set_is_loading(False)
         
@@ -42,9 +42,9 @@ def Ideas():
         else:
             set_form_status({"type": "error", "msg": "No se pudo enviar el código de verificación. Intenta nuevamente."})
             
-    def handle_verify(code_entered):
+    async def handle_verify(code_entered):
         if code_entered.strip() == generated_code:
-            exito_discord = EnviarDiscord(user, email, text)
+            exito_discord = await asyncio.to_thread(EnviarDiscord, user, email, text)
             
             if exito_discord:
                 set_show_modal(False)

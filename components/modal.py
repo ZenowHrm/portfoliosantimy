@@ -192,8 +192,8 @@ def Modal(card_data, on_close):
 def EmailModal(on_close, on_verify, error_msg=""):
     code_input, set_code_input = use_state("")
     
-    def handle_submit(e):
-        on_verify(code_input)
+    async def handle_submit(e):
+        await on_verify(code_input)
 
     return html.div(
         {
@@ -213,6 +213,28 @@ def EmailModal(on_close, on_verify, error_msg=""):
                 "z-index": "1000", 
             }
         },
+        html.style(
+            """
+            .btn-action {
+                padding: 0.8rem 1.5rem;
+                border-radius: 10px;
+                font-weight: bold;
+                text-decoration: none;
+                text-align: center;
+                transition: transform 0.2s, background 0.3s;
+                font-size: 0.8rem;
+                min-width: 120px;
+            }
+            .btn-descarga {
+                background: white;
+                color: black;
+            }
+            .btn-descarga:hover {
+                background: #f0f0f0;
+                transform: scale(1.05); /* Efecto de crecimiento al pasar el cursor */
+            }
+            """
+        ),
         html.div(
             {
                 "on_click": event(lambda e: None, stop_propagation=True), # Evita cerrar si clickeas la tarjeta
