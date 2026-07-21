@@ -2,9 +2,9 @@ import re
 import asyncio
 from reactpy import component, html, use_state
 from theme import COLORS
-from email_service import EnviarEmail
+from backend.email_service import EnviarEmail
 from components.modal import EmailModal 
-from discord_service import EnviarDiscord
+from backend.discord_service import EnviarDiscord
 
 @component
 def Ideas():
