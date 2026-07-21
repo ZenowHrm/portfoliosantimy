@@ -1,25 +1,31 @@
+import smtplib
 import os
 import random
-import resend
+import socket
 from dotenv import load_dotenv
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+old_getaddrinfo = socket.getaddrinfo
+def new_getaddrinfo(*args, **kwargs):
+    responses = old_getaddrinfo(*args, **kwargs)
+    return [response for response in responses if response[0] == socket.AF_INET]
+socket.getaddrinfo = new_getaddrinfo
 
 def EnviarEmail(correo):
-    # Cargar las variables de entorno
     load_dotenv() 
 
-    # Asignar la API Key a Resend usando la variable solicitada
-    resend.api_key = os.getenv("API_KEY_RESEND")
-    
-    # Importante: En Resend, el remitente ("From") debe ser de un dominio que hayas verificado.
-    # Si estás haciendo pruebas y no tienes dominio, usa "onboarding@resend.dev".
-    remitente = os.getenv("EMAIL_USER", "onboarding@resend.dev")
+    remitente = os.getenv("EMAIL_USER")
     destinatario = correo
     asunto = "Codigo de verificacion"
+
+    msg = MIMEMultipart()
+    msg["Subject"] = asunto
+    msg["From"] = remitente
+    msg["To"] = destinatario
     
-    # Generar código de 6 dígitos
     code = random.randint(100000, 999999)
 
-    # Preparar el contenido HTML
     try:
         with open("static/email.html", "r", encoding="UTF-8") as archivo:
             html = archivo.read()
@@ -27,19 +33,20 @@ def EnviarEmail(correo):
     except FileNotFoundError:
         html = f"<h2>Tu código de verificación es: {code}</h2>"
 
-    # Construir el diccionario de parámetros para Resend
-    params = {
-        "from": remitente,
-        "to": [destinatario],
-        "subject": asunto,
-        "html": html
-    }
+    msg.attach(MIMEText(html, "html"))
 
-    # Enviar el correo
     try:
-        resend.Emails.send(params)
+        # 1. Usamos SMTP_SSL en el puerto 465 y le damos un límite de 10 segundos
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10)
+        
+        # 2. (IMPORTANTE) Eliminamos server.starttls() porque ya no es necesario
+        
+        server.login(remitente, os.getenv("PASS"))
+        server.sendmail(remitente, destinatario, msg.as_string())
+        server.quit()
         return True, str(code)
         
     except Exception as e:
-        print(f"Error crítico al enviar el correo con Resend: {e}")
+        # 3. Imprimimos el error exacto para dejar de adivinar si vuelve a fallar
+        print(f"Error crítico al enviar el correo: {e}")
         return False, None
