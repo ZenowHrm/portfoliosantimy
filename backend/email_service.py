@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 def EnviarEmail(correo):
     load_dotenv() 
 
-    remitente = os.getenv("USER")
+    remitente = os.getenv("EMAIL_USER")
     destinatario = correo
     asunto = "Codigo de verificacion"
 
@@ -29,12 +29,17 @@ def EnviarEmail(correo):
     msg.attach(MIMEText(html, "html"))
 
     try:
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
+        # 1. Usamos SMTP_SSL en el puerto 465 y le damos un límite de 10 segundos
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10)
+        
+        # 2. (IMPORTANTE) Eliminamos server.starttls() porque ya no es necesario
+        
         server.login(remitente, os.getenv("PASS"))
-
         server.sendmail(remitente, destinatario, msg.as_string())
         server.quit()
         return True, str(code)
-    except:
+        
+    except Exception as e:
+        # 3. Imprimimos el error exacto para dejar de adivinar si vuelve a fallar
+        print(f"Error crítico al enviar el correo: {e}")
         return False, None
