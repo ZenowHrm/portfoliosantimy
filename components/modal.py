@@ -1,4 +1,4 @@
-from reactpy import component, html, event
+from reactpy import component, html, event, use_state
 from theme import COLORS
 
 @component
@@ -172,7 +172,6 @@ def Modal(card_data, on_close):
             html.h2({"style": {"margin": "0 0 1rem 0"}}, card_data["titulo"]),
             html.p({"style": {"text-align": "center", "margin-bottom": "1.5rem"}}, card_data["descripcion"]),
             
-            # Contenedor de botones
             html.div(
                 {
                     "class_name": "botones-container",
@@ -185,6 +184,105 @@ def Modal(card_data, on_close):
                     }
                 },
                 *[b for b in [boton_previa, boton_descarga] if b is not None]
+            )
+        )
+    )
+
+@component
+def EmailModal(on_close, on_verify, error_msg=""):
+    code_input, set_code_input = use_state("")
+    
+    def handle_submit(e):
+        on_verify(code_input)
+
+    return html.div(
+        {
+            "class_name": "modal-overlay",
+            "on_click": lambda event: on_close(),
+            "style": {
+                "position": "fixed",
+                "top": "0",
+                "left": "0",
+                "right": "0",
+                "bottom": "0",
+                "background-color": "rgba(0, 0, 0, 0.7)", 
+                "display": "flex",
+                "justify-content": "center",
+                "font-size": "0.6rem",
+                "align-items": "center",
+                "z-index": "1000", 
+            }
+        },
+        html.div(
+            {
+                "on_click": event(lambda e: None, stop_propagation=True), # Evita cerrar si clickeas la tarjeta
+                "class_name": "modal-mobile modal-content-animated",
+                "style": {
+                    "box-sizing": "border-box",
+                    "background": COLORS["degradado"], # Fallback de color
+                    "padding": "2.5rem 2rem",
+                    "border-radius": "20px",
+                    "width": "80%",
+                    "max-width": "450px",
+                    "box-shadow": "0px 10px 30px rgba(0,0,0,0.5)",
+                    "display": "flex",
+                    "flex-direction": "column",
+                    "align-items": "center",
+                    "margin": "auto", 
+                    "color": "white"
+                }
+            },
+            html.h2({"style": {"margin": "0 0 1rem 0", "text-align": "center", "font-size": "1.5rem"}}, "Verifica tu Identidad"),
+            html.p(
+                {"style": {"text-align": "center", "margin-bottom": "1.5rem", "font-size": "0.9rem"}}, 
+                "Hemos enviado un código de 6 dígitos a tu correo. Ingrésalo a continuación."
+            ),
+            html.input({
+                "type": "text",
+                "placeholder": "123456",
+                "max_length": "6",
+                "value": code_input,
+                "on_change": lambda e: set_code_input(e["target"]["value"]),
+                "style": {
+                    "width": "80%",
+                    "padding": "12px 15px",
+                    "background": "rgba(255, 255, 255, 0.05)",
+                    "border": "1px solid #ff4444" if error_msg else "1px solid rgba(255, 255, 255, 0.3)",
+                    "border-radius": "8px",
+                    "color": "#ffffff",
+                    "font-size": "1.5rem",
+                    "text-align": "center",
+                    "letter-spacing": "10px",
+                    "margin-bottom": "5px",
+                    "outline": "none"
+                }
+            }),
+            html.p(
+                {"style": {"color": "#ff4444", "font-size": "0.8rem", "margin-bottom": "15px", "min-height": "15px"}}, 
+                error_msg # Muestra el error si el código es incorrecto
+            ),
+            html.div(
+                {"style": {"display": "flex", "gap": "1rem", "width": "100%", "justify-content": "center"}},
+                html.button(
+                    {
+                        "on_click": lambda e: on_close(),
+                        "class_name": "btn-action btn-previa", # Reusando tus estilos CSS del Modal 1
+                        "style": {"cursor": "pointer"}
+                    }, 
+                    "Cancelar"
+                ),
+                html.button(
+                    {
+                        "on_click": handle_submit,
+                        "disabled": len(code_input) < 6,
+                        "class_name": "btn-action btn-descarga",
+                        "style": {
+                            "cursor": "pointer" if len(code_input) == 6 else "not-allowed", 
+                            "opacity": "1" if len(code_input) == 6 else "0.5"
+                        }
+                    }, 
+                    "Verificar"
+                )
             )
         )
     )

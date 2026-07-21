@@ -1,6 +1,9 @@
 # Variables de entorno y contraseñas
 .env
 
+# Base de datos
+sql_app.db
+
 # Entorno virtual de Python
 venv/
 .env/
@@ -8,3 +11,5 @@ venv/
 # Archivos temporales de Python
 __pycache__/
 *.pyc
+*.py[cod]
+*$py.class
