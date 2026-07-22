@@ -78,7 +78,7 @@ def Ideas():
                 html.p({}, "Usuario"),
                 html.input({
                     "max_length": "20",
-                    "type": "text", "placeholder": "Nombre de Usuario", "value": "",  
+                    "type": "text", "placeholder": "Nombre de Usuario", "value": user,  
                     "on_change": lambda e: set_user(e["target"]["value"]),
                     "style": {
                         "width": "100%", "padding": "12px 15px", "background": "rgba(255, 255, 255, 0.05)",  
@@ -91,7 +91,7 @@ def Ideas():
                 html.p({"style": {"margin": "10px 0 0 0"}}, "Idea / Consulta"),
                 html.textarea({
                     "max_length": "1000",
-                    "placeholder": "Escribe aquí", "value": "",  
+                    "placeholder": "Escribe aquí", "value": text,  
                     "on_change": lambda e: set_text(e["target"]["value"]), 
                     "style": {
                         "width": "100%", "padding": "12px 15px", "background": "rgba(255, 255, 255, 0.05)",  
@@ -104,7 +104,7 @@ def Ideas():
                 # --- AVISO Y INPUT CORREO ---
                 html.p({"style": {"margin": "10px 0 0 0"}}, "Correo"),
                 html.input({
-                    "type": "email", "placeholder": "example@gmail.com", "value": "",
+                    "type": "email", "placeholder": "example@gmail.com", "value": email,
                     "on_change": lambda e: set_email(e["target"]["value"]),
                     "style": {
                         "width": "100%", "padding": "12px 15px", "background": "rgba(255, 255, 255, 0.05)", 
