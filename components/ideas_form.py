@@ -2,7 +2,6 @@ import re
 import asyncio
 from reactpy import component, html, use_state
 from theme import COLORS
-from backend.email_service import EnviarEmail
 from components.modal import EmailModal 
 from backend.discord_service import EnviarDiscord
 
@@ -12,9 +11,6 @@ def Ideas():
     text, set_text = use_state("")
     email, set_email = use_state("")
     
-    show_modal, set_show_modal = use_state(False)
-    generated_code, set_generated_code = use_state("")
-    modal_error, set_modal_error = use_state("")
     is_loading, set_is_loading = use_state(False)
     form_status, set_form_status = use_state({"type": "", "msg": ""}) 
     
@@ -31,37 +27,17 @@ def Ideas():
         
         await asyncio.sleep(0.1)
         
-        success, code = await asyncio.to_thread(EnviarEmail, email)
+        success = await asyncio.to_thread(EnviarDiscord, user, email, text)
         
         set_is_loading(False)
         
         if success:
-            set_generated_code(code)
-            set_modal_error("")
-            set_show_modal(True)
+            set_user("")
+            set_text("")
+            set_email("")
+            set_form_status({"type": "success", "msg": "¡Mensaje enviado exitosamente!"})
         else:
-            set_form_status({"type": "error", "msg": "No se pudo enviar el código de verificación. Intenta nuevamente."})
-            
-    async def handle_verify(code_entered):
-        if code_entered.strip() == generated_code:
-            exito_discord = await asyncio.to_thread(EnviarDiscord, user, email, text)
-            
-            if exito_discord:
-                set_show_modal(False)
-                set_user("")
-                set_text("")
-                set_email("")
-                set_generated_code("")
-                set_form_status({"type": "success", "msg": "¡Mensaje enviado exitosamente!"})
-            else:
-                set_show_modal(False)
-                set_form_status({"type": "error", "msg": "Verificación exitosa, pero hubo un error al guardar tu mensaje. Intenta luego."})
-                
-        else:
-            set_modal_error("El código es incorrecto. Por favor, verifica tu correo.")
-    def handle_close_modal():
-        set_show_modal(False)
-        set_modal_error("")
+            set_form_status({"type": "error", "msg": "Verificación exitosa, pero hubo un error al guardar tu mensaje. Intenta luego."})
     
     ideas = html.div(
         {
@@ -121,21 +97,11 @@ def Ideas():
                         "width": "100%", "padding": "12px 15px", "background": "rgba(255, 255, 255, 0.05)",  
                         "border": "1px solid rgba(255, 255, 255, 0.2)", "border-radius": "8px", "color": "#ffffff", 
                         "font-size": "0.8rem", "box-sizing": "border-box", "outline": "none",
-                        "min-height": "150px", "resize": "none", "font-family": "inherit", "margin": "0 0 10px 0",
+                        "min-height": "150px", "resize": "none", "font-family": "inherit", "margin": "0",
                     }
                 }),
                 
                 # --- AVISO Y INPUT CORREO ---
-                html.div(
-                    {
-                        "style": {
-                            "box-sizing": "border-box", "background": COLORS.get("medium_gray", "#333"),
-                            "padding": "1rem", "border-radius": "20px", "width": "100%",
-                            "box-shadow": "0px 10px 30px rgba(0,0,0,0.5)", "margin": "auto", 
-                        }
-                    },
-                    html.p({"class-name": "texto", "style": {"margin": "0"}}, "Por motivos de seguridad, ingresa tu correo electrónico para una verificación")
-                ),
                 html.p({"style": {"margin": "10px 0 0 0"}}, "Correo"),
                 html.input({
                     "type": "email", "placeholder": "example@gmail.com", "value": "",
@@ -160,7 +126,7 @@ def Ideas():
                         "min-height": "20px"
                     }
                 },
-                form_status["msg"] if form_status["msg"] else ""
+                form_status["msg"] if form_status["msg"] else "Rellena los campos de arriba"
             ),
             
             # --- BOTÓN DE ENVIAR ---
@@ -183,12 +149,4 @@ def Ideas():
         )
     )
     
-    # Retornamos el contenedor con el formulario y, si el estado lo dicta, montamos el modal
-    return html.div(
-        ideas,
-        EmailModal(
-            on_close=handle_close_modal, 
-            on_verify=handle_verify, 
-            error_msg=modal_error
-        ) if show_modal else ""
-    )
+    return ideas
