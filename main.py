@@ -1,10 +1,14 @@
-from fastapi import FastAPI
+import os
+from dotenv import load_dotenv
+from fastapi import FastAPI, Form, Response
 from reactpy import component, html, use_state
 from reactpy.backend.fastapi import configure, Options
 from reactpy_router import browser_router, route, link
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
+from backend.auth import verificar_contrasena, crear_token_acceso
+from fastapi.responses import RedirectResponse
 
 import models
 
@@ -18,11 +22,16 @@ from components.ideas_form import Ideas
 from components.logs_view import Logs
 from components.admin_panel import Adminpanel
 
+load_dotenv()
+
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 app.add_websocket_route = app.add_api_websocket_route
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+MINUTOS_DE_SESION = 10
+entorno = ("produccion" == os.getenv("ENTORNO"))
 # ---------------------------------------
 
 opciones_reactpy = Options(
@@ -38,6 +47,9 @@ opciones_reactpy = Options(
                     color: #ffffff;
                     font-family: 'Sono', sans-serif;
                     box-sizing: border-box;
+                }
+                input[type="password"]::-ms-reveal {
+                    filter: invert(1);
                 }
             """
         )
@@ -80,7 +92,27 @@ def Aplicacion():
 def App():
     return browser_router(
         route("/", Aplicacion()),
-        route("/admin", Adminpanel())
+        route("/auth_process37", Adminpanel())
     )
+
+@app.post("/api/login")
+def login(contrasena: str = Form(...)):
+    if verificar_contrasena(contrasena):
+        
+        token = crear_token_acceso({"usuario": "admin"}, MINUTOS_DE_SESION)
+        
+        respuesta = RedirectResponse(url="/auth_process37", status_code=303)
+        
+        respuesta.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=entorno,
+            samesite="lax",
+            max_age=MINUTOS_DE_SESION * 60
+        )
+        return respuesta
+
+    return RedirectResponse(url="/auth_process37?error=1", status_code=303)
 
 configure(app, App, options=opciones_reactpy)

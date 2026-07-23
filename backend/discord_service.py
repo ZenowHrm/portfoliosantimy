@@ -1,6 +1,9 @@
 import os
 import requests
 from dotenv import load_dotenv
+import datetime
+
+fecha = datetime.datetime.now()
 
 def EnviarDiscord(usuario, correo, mensaje):
     load_dotenv()
@@ -35,7 +38,11 @@ def EnviarDiscord(usuario, correo, mensaje):
                         "value": mensaje,
                         "inline": False
                     }
-                ]
+                ],
+                "footer": {
+                    "text": f"Fecha de envio: {fecha}",
+                    "icon_url": "https://i.imgur.com/AfFp7pu.png"
+                }
             }
         ]
     }
