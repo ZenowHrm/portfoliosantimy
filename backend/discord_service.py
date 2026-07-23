@@ -29,7 +29,7 @@ def EnviarDiscord(usuario, correo, mensaje):
                         "inline": True
                     },
                     {
-                        "name": "📧 Correo (Verificado)",
+                        "name": "📧 Correo",
                         "value": correo,
                         "inline": True
                     },

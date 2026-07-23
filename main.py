@@ -30,7 +30,7 @@ app = FastAPI()
 app.add_websocket_route = app.add_api_websocket_route
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-MINUTOS_DE_SESION = 10
+MINUTOS_DE_SESION = 60
 entorno = ("produccion" == os.getenv("ENTORNO"))
 # ---------------------------------------
 
