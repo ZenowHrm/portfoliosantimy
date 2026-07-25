@@ -32,7 +32,7 @@ def verificar_token(token: str):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITMO])
         return {"valido": True, "datos": payload}
     except jwt.ExpiredSignatureError:
-        return {"valido": False, "error": "El token ha expirado. Inicia sesión de nuevo."}
+        return {"valido": False, "error": "El token ha expirado."}
     except jwt.InvalidTokenError:
         return {"valido": False, "error": "Token inválido o alterado."}
 

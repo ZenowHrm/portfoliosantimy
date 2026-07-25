@@ -1,12 +1,11 @@
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI, Form, Response
+from fastapi import FastAPI, Form
 from reactpy import component, html, use_state
 from reactpy.backend.fastapi import configure, Options
-from reactpy_router import browser_router, route, link
+from reactpy_router import browser_router, route
 from fastapi.staticfiles import StaticFiles
-from sqlalchemy.orm import Session
-from database import SessionLocal, engine
+from database import engine
 from backend.auth import verificar_contrasena, crear_token_acceso
 from fastapi.responses import RedirectResponse
 

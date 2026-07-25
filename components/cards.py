@@ -187,6 +187,7 @@ def MCard(card_data, on_card_click):
                 "overflow": "hidden",
                 "width": "calc(100% - 2rem)",
                 "max-width": "300px",
+                "max-height": "87px",
                 "border-radius": "10px",
             }
         },

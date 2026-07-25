@@ -14,9 +14,8 @@ def EnviarDiscord(usuario, correo, mensaje):
         return False
 
     data = {
-        # --- AQUÍ CONFIGURAS EL PERFIL DEL MENSAJE ---
-        "username": "Portafolio | Notificaciones", # El nombre que aparecerá como remitente
-        "avatar_url": "https://i.postimg.cc/9XvKhSNc/69-sin-titulo-20250129061922.png", # <-- URL pública de la foto de perfil
+        "username": "Portafolio | Notificaciones", 
+        "avatar_url": "https://i.postimg.cc/9XvKhSNc/69-sin-titulo-20250129061922.png", 
         
         "embeds": [
             {

@@ -110,7 +110,7 @@ def Projects():
                     "width": "100%",
                     "position": "sticky",       
                     "bottom": "0",              
-                    "box-shadow": "0px -4px 10px rgba(0,0,0,0.05)", # Opcional: una sombra sutil para separar la barra
+                    "box-shadow": "0px -4px 10px rgba(0,0,0,0.05)",
                     "z-index": "10"
                 }
             },
