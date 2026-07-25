@@ -74,7 +74,6 @@ def Ideas():
             html.div(
                 {"style": {"display": "flex", "flex-direction": "column", "padding": "20px", "width": "100%", "box-sizing": "border-box"}},
                 
-                # --- INPUT USUARIO ---
                 html.p({}, "Usuario"),
                 html.input({
                     "max_length": "20",
@@ -86,8 +85,7 @@ def Ideas():
                         "font-size": "0.8rem", "box-sizing": "border-box", "outline": "none"
                     }
                 }),
-                
-                # --- INPUT IDEA ---
+
                 html.p({"style": {"margin": "10px 0 0 0"}}, "Idea / Consulta"),
                 html.textarea({
                     "max_length": "1000",
@@ -101,7 +99,6 @@ def Ideas():
                     }
                 }),
                 
-                # --- AVISO Y INPUT CORREO ---
                 html.p({"style": {"margin": "10px 0 0 0"}}, "Correo"),
                 html.input({
                     "type": "email", "placeholder": "example@gmail.com", "value": email,
@@ -115,7 +112,6 @@ def Ideas():
                 })
             ),
             
-            # --- MENSAJE DE ESTADO (Errores o Éxitos) ---
             html.p(
                 {
                     "style": {
@@ -129,7 +125,6 @@ def Ideas():
                 form_status["msg"] if form_status["msg"] else "Rellena los campos de arriba"
             ),
             
-            # --- BOTÓN DE ENVIAR ---
             html.button(
                 {
                     "on_click": request_verification,

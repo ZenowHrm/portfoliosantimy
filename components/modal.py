@@ -26,7 +26,7 @@ def Modal(card_data, on_close):
 
     return html.div(
         {
-            "class_name": "modal-overlay", # <-- Nueva clase para el fondo
+            "class_name": "modal-overlay", 
             "on_click": lambda event: on_close(),
             "style": {
                 "position": "fixed",
@@ -146,7 +146,6 @@ def Modal(card_data, on_close):
         html.div(
             {
                 "on_click": event(lambda e: None, stop_propagation=True),
-                # <-- Agregamos la clase modal-content-animated al contenedor principal de la tarjeta
                 "class_name": "custom-scrollbar modal-mobile modal-content-animated",
                 "style": {
                     "box-sizing": "border-box",
@@ -231,17 +230,17 @@ def EmailModal(on_close, on_verify, error_msg=""):
             }
             .btn-descarga:hover {
                 background: #f0f0f0;
-                transform: scale(1.05); /* Efecto de crecimiento al pasar el cursor */
+                transform: scale(1.05); 
             }
             """
         ),
         html.div(
             {
-                "on_click": event(lambda e: None, stop_propagation=True), # Evita cerrar si clickeas la tarjeta
+                "on_click": event(lambda e: None, stop_propagation=True), 
                 "class_name": "modal-mobile modal-content-animated",
                 "style": {
                     "box-sizing": "border-box",
-                    "background": COLORS["degradado"], # Fallback de color
+                    "background": COLORS["degradado"],
                     "padding": "2.5rem 2rem",
                     "border-radius": "20px",
                     "width": "80%",
@@ -281,14 +280,14 @@ def EmailModal(on_close, on_verify, error_msg=""):
             }),
             html.p(
                 {"style": {"color": "#ff4444", "font-size": "0.8rem", "margin-bottom": "15px", "min-height": "15px"}}, 
-                error_msg # Muestra el error si el código es incorrecto
+                error_msg 
             ),
             html.div(
                 {"style": {"display": "flex", "gap": "1rem", "width": "100%", "justify-content": "center"}},
                 html.button(
                     {
                         "on_click": lambda e: on_close(),
-                        "class_name": "btn-action btn-previa", # Reusando tus estilos CSS del Modal 1
+                        "class_name": "btn-action btn-previa", 
                         "style": {"cursor": "pointer"}
                     }, 
                     "Cancelar"
