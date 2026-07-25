@@ -7,15 +7,12 @@ ANIMATIONS_CSS = """
     scroll-snap-align: center;
     z-index: 1; 
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    background: rgba(49, 49, 49, 0.65); 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(49, 49, 49, 0.65);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
         inset 0 -1px 0 rgba(0, 0, 0, 0.6), 
-        inset 0 0 18px 9px rgba(0, 0, 0, 0.4); 
+        inset 0 0 18px 9px rgba(0, 0, 0, 0.4);
 }
 .animated-card:hover {
     transform: translateY(-4px);
