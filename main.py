@@ -35,7 +35,9 @@ entorno = ("produccion" == os.getenv("ENTORNO"))
 
 opciones_reactpy = Options(
     head=html.head(
+        html.title("Portfolio SantiMY"),
         html.meta({"name": "viewport", "content": "width=device-width, initial-scale=1.0"}),
+        html.link({"rel": "icon", "type": "image/png", "href": "/static/img/perfil.png"}),
         html.link({"rel": "stylesheet", "href": "https://fonts.googleapis.com/icon?family=Material+Icons"}),
         html.link({"rel": "stylesheet", "href": "https://fonts.googleapis.com/css2?family=Sono:wght@200..800&display=swap"}),
         html.style(
