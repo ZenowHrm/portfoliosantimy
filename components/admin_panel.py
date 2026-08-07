@@ -1,7 +1,6 @@
 from reactpy import component, html, use_state, use_connection, event
 from theme import COLORS, hex_to_rgba
 from backend.auth import verificar_token
-from database import SessionLocal
 from backend.crud_proyectos import *
 from backend import schemas
 
@@ -132,16 +131,11 @@ def Adminpanel():
             set_activo(False)
         
         def proyectos():
-            db = SessionLocal()
-            try:
-                lista = get_cards(db, 0, 100)
-                card = ()
-                for i in lista:
-                    card = card + (cards_elements(i, set_opcion_seleccionada),)
-                
-                return card
-            finally:
-                db.close()
+            lista = get_cards(0, 100)
+            card = ()
+            for i in lista:
+                card = card + (cards_elements(i, set_opcion_seleccionada),)
+            return card
         
         pag = html.div(
             {
@@ -394,19 +388,13 @@ def cards_elements(card_data, on_card_select):
 
 @component
 def modales(id, type_modal, on_close, token):
-    db = SessionLocal()
-    
     def modal_from():
         formulario, set_formulario = use_state({})
         mensaje_error, set_mensaje_error = use_state("")
         
         def datos_card():
-            try:
-                card = get_card(db, id)
-                
-                return card
-            finally:
-                db.close()
+            card = get_card(id)
+            return card
 
         def handle_change(campo):
             def update(e):
@@ -443,17 +431,11 @@ def modales(id, type_modal, on_close, token):
             try:
                 print("Diccionario listo para enviar:", datos_finales)
                 if type_modal == "Crear":
-                    try:
-                        nuevo_proyecto = schemas.CardCreate(**datos_finales)
-                        create_card(db, nuevo_proyecto)
-                    finally:
-                        db.close()
+                    nuevo_proyecto = schemas.CardCreate(**datos_finales)
+                    create_card(nuevo_proyecto)
                 elif type_modal == "Editar":
-                    try:
-                        proyecto_actualizado = schemas.CardUpdate(**datos_finales)
-                        update_card(db, id, proyecto_actualizado)
-                    finally:
-                        db.close()
+                    proyecto_actualizado = schemas.CardUpdate(**datos_finales)
+                    update_card(id, proyecto_actualizado)
                 on_close()
             except:
                 set_mensaje_error("Error al crear el proyecto")
@@ -576,11 +558,10 @@ def modales(id, type_modal, on_close, token):
                 return
 
             try:
-                delete_card(db, id)
+                delete_card(id)
             except:
                 set_mensaje_error("Error al eliminar")
             finally:
-                db.close()
                 on_close()
         
         moda = html.div(

@@ -1,6 +1,5 @@
 from reactpy import component, html, use_state
 from backend.crud_proyectos import *
-from database import SessionLocal
 from theme import COLORS
 
 from components.cards import Card
@@ -21,38 +20,34 @@ def Projects():
             set_index(index - 1)
     
     def proyectos():
-        db = SessionLocal()
-        try:
-            lista = get_cards(db, (index * 10), 10)
-            card = ()
-            for i in lista:
-                card = card + (Card(i, set_tarjeta_activa),)
-            if card == ():
-                set_verify(False)
-                return html.div(
+        lista = get_cards((index * 10), 10)
+        card = ()
+        for i in lista:
+            card = card + (Card(i, set_tarjeta_activa),)
+        if card == ():
+            set_verify(False)
+            return html.div(
+                        {
+                            "style": {
+                                "width": "100%",
+                                "height": "65.5dvh",
+                                "display": "flex",
+                                "align-items": "center",
+                                "justify-content": "center",
+                            }
+                        },
+                        html.p(
                             {
                                 "style": {
-                                    "width": "100%",
-                                    "height": "65.5dvh",
-                                    "display": "flex",
-                                    "align-items": "center",
-                                    "justify-content": "center",
+                                    "font-size": "1.5rem",
                                 }
                             },
-                            html.p(
-                                {
-                                    "style": {
-                                        "font-size": "1.5rem",
-                                    }
-                                },
-                                "That's all for now."
-                            )
+                            "That's all for now."
                         )
-            else:
-                set_verify(True)
-                return card
-        finally:
-            db.close()
+                    )
+        else:
+            set_verify(True)
+            return card
     
     def cerrar_modal():
         set_tarjeta_activa(None)

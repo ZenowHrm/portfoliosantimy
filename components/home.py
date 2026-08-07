@@ -1,6 +1,5 @@
 from reactpy import component, html, use_state
 from backend.crud_proyectos import *
-from database import SessionLocal
 
 from components.cards import Card, MCard
 from components.modal import Modal
@@ -10,26 +9,18 @@ def Home():
     tarjeta_activa, set_tarjeta_activa = use_state(None)
     
     def destacadas():
-        db = SessionLocal()
-        try:
-            lista = get_destacadas(db, 5)
-            card = ()
-            for i in lista:
-                card = card + (Card(i, set_tarjeta_activa),)
-            return card
-        finally:
-            db.close()
+        lista = get_destacadas(5)
+        card = ()
+        for i in lista:
+            card = card + (Card(i, set_tarjeta_activa),)
+        return card
     
     def recientes():
-        db = SessionLocal()
-        try:
-            lista = get_recientes(SessionLocal(), 6)
-            card = ()
-            for i in lista:
-                card = card + (MCard(i, set_tarjeta_activa),)
-            return card
-        finally:
-            db.close()
+        lista = get_recientes(6)
+        card = ()
+        for i in lista:
+            card = card + (MCard(i, set_tarjeta_activa),)
+        return card
 
     
     def cerrar_modal():
